@@ -1,48 +1,49 @@
 import React from 'react';
-
+import { TodoContext } from '../TodoContext';
 import { TodoCounter } from "../TodoCounter";
 import { TodoItem } from "../TodoItem";
 import { TodoList } from "../TodoList";
 import { TodoSearch } from "../TodoSearch";
 import { CreateTodoButton } from "../CreateTodoButton";
+import { Modal } from '../Modal';
+import { TodoForm } from '../TodoForm';
 
-function AppUI({
-	loading,
-	error,
-	totalTodos,
-	completedTodos,
-	searchValue,
-	setSearchValue,
-	searchedTodos,
-	completeTodo,
-	deleteTodo
-}) {
+function AppUI() {
+	const {
+		error,
+		loading,
+		searchedTodos,
+		completeTodo,
+		deleteTodo,
+		openModal,
+		setOpenModal
+	} = React.useContext(TodoContext);
 	return (
 		<React.Fragment>
-			<TodoCounter
-				total={totalTodos}
-				completed={completedTodos}
-			/>
-			<TodoSearch
-				searchValue={searchValue}
-				setSearchValue={setSearchValue}
-			/>
-
+			<TodoCounter />
+			<TodoSearch />
+			
 			<TodoList>
 				{error && <p>Desesperate, hubo un error...</p>}
 				{loading && <p>Estamos cargando, no desesperes...</p>}
 				{(!loading && !searchedTodos.length && !error) && <p>Crea tu primer TODO!</p>}
 
-        {searchedTodos.map(todo => (
-          <TodoItem
-            key={todo.text}
-            text={todo.text}
+				{searchedTodos.map(todo => (
+					<TodoItem
+						key={todo.text}
+						text={todo.text}
 						completed={todo.completed}
 						onComplete={() => completeTodo(todo.text)}
 						onDelete={() => deleteTodo(todo.text)}
-          />
-        ))}
-      </TodoList>
+					/>
+				))}
+			</TodoList>
+
+			{openModal && (
+				<Modal>
+					<TodoForm />
+				</Modal>
+			)}
 
       <CreateTodoButton />
     </React.Fragment>
